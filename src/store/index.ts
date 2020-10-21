@@ -1,12 +1,11 @@
+import type { App } from 'vue'
 import { createStore } from 'vuex'
+import { config } from 'vuex-module-decorators'
 
-export default createStore({
-  state: {
-  },
-  mutations: {
-  },
-  actions: {
-  },
-  modules: {
-  }
-})
+config.rawError = true
+
+const store = createStore({modules: {}})
+export function setupStore(app: App<Element>) {
+  app.use(store)
+}
+export default store;
