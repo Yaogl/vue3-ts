@@ -12,48 +12,48 @@
 </template>
 
 <script>
-import { defineComponent, ref, reactive } from 'vue';
-import { Toast } from 'vant'
-import { login } from '@/api/user'
-import router from '@/router'
-import { userStore } from '@/store/modules/user'
+import { defineComponent, ref, reactive } from "vue";
+import { Toast } from "vant";
+import { login } from "@/api/user";
+import router from "@/router";
+import store from "@/store";
 
 export default defineComponent({
-    components: [ Toast ],
-    setup() {
-        const formData = reactive({
-            username: "",
-            password: "",
-        })
-        const loading = ref(false)
-        const submit = () => {
-            if (!formData.username) {
-                Toast("请输入用户名");
-                return;
-            }
-            if (!formData.password) {
-                Toast("请输入密码");
-                return;
-            }
-            loading.value = true;
-            login(formData).then((res) => {
-                console.log(res, 99);
-                if (res.code === -1) {
-                    Toast("登录失败");
-                } else {
-                    userStore.setUserInfo(res.data);
-                    router.push("/");
-                }
-                loading.value = false;
-            });
+  components: [Toast],
+  setup() {
+    const formData = reactive({
+      username: "",
+      password: "",
+    });
+    const loading = ref(false);
+    const submit = () => {
+      if (!formData.username) {
+        Toast("请输入用户名");
+        return;
+      }
+      if (!formData.password) {
+        Toast("请输入密码");
+        return;
+      }
+      loading.value = true;
+      login(formData).then((res) => {
+        console.log(res, 99);
+        if (res.code === -1) {
+          Toast("登录失败");
+        } else {
+          store.commit('muSetUserInfo', res.data)
+          router.push("/");
         }
-        return {
-            formData,
-            loading,
-            submit
-        }
-    }
-})
+        loading.value = false;
+      });
+    };
+    return {
+      formData,
+      loading,
+      submit,
+    };
+  },
+});
 </script>
 <style lang="scss">
 .register-container {

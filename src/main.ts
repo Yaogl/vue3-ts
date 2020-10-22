@@ -5,6 +5,7 @@ import { setupStore } from './store';
 import Vant from 'vant';
 import 'vant/lib/index.css';
 import 'lib-flexible/flexible.js'
+import './permission.ts'
 const app = createApp(App)
   app.use(router)
   app.use(Vant)

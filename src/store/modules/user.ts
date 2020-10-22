@@ -1,12 +1,12 @@
-import { Module, VuexModule, Mutation, Action, getModule } from 'vuex-module-decorators';
-import store from '@/store';
+import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators';
+
 interface UserType {
   username: string;
   realname: string;
 }
 
-@Module({ name: 'user', dynamic: true, namespaced: true, store })
-class User extends VuexModule {
+@Module
+export default class User extends VuexModule {
   // state
   userInfo: UserType = {} as UserType
   get getUserInfo(): UserType {
@@ -23,5 +23,3 @@ class User extends VuexModule {
     this.muSetUserInfo(userInfo)
   }
 }
-export { User };
-export const userStore = getModule<User>(User);
