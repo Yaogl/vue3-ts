@@ -31,9 +31,9 @@ class Server {
       const res = response.data
       if (res.code === ResultEnum.ERROR && res.message === ResultEnum.ERRMESSAGE) {
         Toast('请登录')
-        store.dispatch('loginOut')
+        store.commit('muLoginOut')
         location.reload()
-        return
+        return Promise.resolve(res)
       }
       if (res.code === ResultEnum.SUCCESS) {
         return Promise.resolve(res)

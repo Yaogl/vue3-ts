@@ -17,7 +17,10 @@ export default class User extends VuexModule {
   muSetUserInfo(userInfo: UserType): void {
     this.userInfo = userInfo
   }
-
+  @Mutation
+  muLoginOut (): void {
+    this.userInfo = {} as UserType
+  }
   @Action
   setUserInfo(userInfo: UserType): void {
     this.muSetUserInfo(userInfo)
