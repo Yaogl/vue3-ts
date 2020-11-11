@@ -25,42 +25,53 @@
 </template>
 
 <script>
-import { defineComponent, reactive, toRefs } from 'vue'
+import { defineComponent, reactive, toRefs, computed } from 'vue'
 import { Toast } from 'vant'
 import { getList } from '@/api/user'
+import { useStore } from 'vuex'
 
 export default defineComponent({
     setup () {
+        const store = useStore()
+      // console.log(useStore().dispatch('setUserInfo', { name: 'zhangsan', realname: 'zhangsan' }));
+        const curIndex = computed(() => {
+          return store.getters.getCurIndex
+        })
+        const questionList = computed(() => {
+          return store.getters.getQuestion
+        })
+
+        const isBegin = computed(() => {
+          return store.getters.getIsBegin
+        })
+
         const actionData = reactive({
             loading: false,
-            isBegin: false,
-            curIndex: 0,
             answers: [],
-            audio: '',
-            questionList: []
+            audio: ''
         })
         const getQuestionList = () => {
             actionData.loading = true
             getList({ page: 1, size: 1000 }).then(res => {
                 actionData.loading = false
                 if (res.code === 0) {
-                actionData.questionList = res.data.data
-                if (actionData.questionList.length) {
-                    actionData.questionList.map(item => {
+                store.commit('muSetQuestionList', res.data.data)
+                if (res.data.data.length) {
+                    questionList.value.map(item => {
                         item.rightkeys = JSON.parse(item.rightkeys)
                         item.answers = JSON.parse(item.answers)
                     })
                 }
-                actionData.isBegin = true
-                actionData.curIndex = 0
-                if (!actionData.questionList.length) {
-                    actionData.isBegin = false
+                store.commit('muSetIsBegin', true)
+                store.commit('muSetCurIndex', 0)
+                if (!questionList.value.length) {
+                    store.commit('muSetIsBegin', false)
                     Toast('题库中没有问题，请录入后再在作答')
                 }
                 }
             })
         }
-        const palyAudio = (right) => {
+        const playAudio = (right) => {
             const num = right ? 15 : 4
             const publicLink = right ? 'right/right' : 'wrong/wrong'
             const ins = Math.floor(Math.random() * num) + 1
@@ -70,17 +81,16 @@ export default defineComponent({
             doc.load()
         }
         const submit = () => {
-            const cur = actionData.questionList[actionData.curIndex]
-            console.log(JSON.stringify(actionData.answers));
+            const cur = questionList.value[curIndex.value]
             if (JSON.stringify(actionData.answers) === JSON.stringify(cur.rightkeys)) {
-                palyAudio(true) // 正确
+                playAudio(true) // 正确
                 actionData.answers = []
-                actionData.curIndex++ 
-                if (actionData.curIndex === actionData.questionList.length) {
-                    actionData.curIndex = 0
+                store.commit('muSetCurIndex', curIndex.value + 1)
+                if (curIndex.value === questionList.value.length) {
+                  store.commit('muSetCurIndex', 0)
                 }
             } else {
-                palyAudio(false) // 错误的
+                playAudio(false) // 错误的
                 Toast('请重新选择')
                 actionData.answers = []
             }
@@ -89,8 +99,11 @@ export default defineComponent({
 
         return {
             submit,
-            palyAudio,
+            playAudio,
             getQuestionList,
+            curIndex,
+            isBegin,
+            questionList,
             ...toRefs(actionData)
         }
     }

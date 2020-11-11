@@ -23,6 +23,6 @@ export default class User extends VuexModule {
   }
   @Action
   setUserInfo(userInfo: UserType): void {
-    this.muSetUserInfo(userInfo)
+    this.context.commit('muSetUserInfo', userInfo)
   }
 }

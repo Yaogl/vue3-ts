@@ -15,10 +15,16 @@ export default class Question extends VuexModule {
   // state
   questionList: ListQ = []
   curIndex = 0
+  isBegin = false
   get getQuestion(): ListQ {
     return this.questionList
   }
-
+  get getCurIndex(): number {
+    return this.curIndex
+  }
+  get getIsBegin(): boolean {
+    return this.isBegin
+  }
   @Mutation
   muSetQuestionList(list: ListQ): void {
     this.questionList = list
@@ -26,5 +32,9 @@ export default class Question extends VuexModule {
   @Mutation
   muSetCurIndex(index: number): void {
     this.curIndex = index
+  }
+  @Mutation
+  muSetIsBegin(boo: boolean): void {
+    this.isBegin = boo
   }
 }
