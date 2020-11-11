@@ -19,7 +19,7 @@
       </van-checkbox-group>
       <van-button type="primary" @click="submit">提交</van-button>
     </div>
-    <audio id="audio" :src="audio" autoplay/>
+    <audio id="audio" autoplay/>
     <!-- <van-cell icon="success" v-for="item in list" :key="item" :title="item" /> -->
   </div>
 </template>
@@ -63,9 +63,10 @@ export default defineComponent({
         const palyAudio = (right) => {
             const num = right ? 15 : 4
             const publicLink = right ? 'right/right' : 'wrong/wrong'
-            const ins = Math.floor(Math.random() * num)
+            const ins = Math.floor(Math.random() * num) + 1
             actionData.audio = require('@/assets/' + publicLink + ins + '.mp3')
             const doc = document.getElementById('audio')
+            doc.src = actionData.audio
             doc.load()
         }
         const submit = () => {
